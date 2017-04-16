@@ -25,11 +25,21 @@ namespace MaximStartsev.FunctionalSql.Test
             var command = CreateCommand();
             Assert.IsNotNull(command.Select<object>());
         }
-
+        [TestMethod]
+        public void ExecuteScalar()
+        {
+            var data = CreateConnection().CreateCommand("SELECT TOP 1 Data FROM [experiments1].[dbo].[Table]").ExecuteScalar();
+            Assert.IsNotNull(data);
+        }
+        [TestMethod]
+        public void ExecuteNonQuery()
+        {
+            CreateConnection().CreateCommand("UPDATE [experiments1].[dbo].[Table] SET Data = '3333' WHERE id = 1").ExecuteNonQuery();
+        }
         private FuCommand CreateCommand()
         {
             var connection = CreateConnection();
-            return connection.CreateCommand("SELECT * FROM [experiment1].[dbo].[table]");
+            return connection.CreateCommand("SELECT * FROM [experiments1].[dbo].[Table]");
         }
         private FuConnection CreateConnection()
         {

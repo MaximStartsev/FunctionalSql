@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MaximStartsev.FunctionalSql
 {
@@ -16,18 +12,35 @@ namespace MaximStartsev.FunctionalSql
             _command = command ?? throw new ArgumentNullException(nameof(command));
             _connection = connection ?? throw new ArgumentNullException(nameof(connection));
         }
-        public void ExecuteScalar()
+        public object ExecuteScalar()
         {
-            _command.ExecuteScalar();
+            try
+            {
+                _connection.Open();
+                return _command.ExecuteScalar();
+            }
+            finally
+            {
+                _connection.Close();
+            }
         }
         
+        public void ExecuteNonQuery()
+        {
+            try
+            {
+                _connection.Open();
+                _command.ExecuteNonQuery();
+            }
+            finally
+            {
+                _connection.Close();
+            }
+        }
+
         internal IDataReader ExecuteReader()
         {
             return _command.ExecuteReader();
-        }
-        private void Test()
-        {
-            var fuset = new FuSet<object>(this);
         }
 
         public FuSet<T> Select<T>() where T: new()
